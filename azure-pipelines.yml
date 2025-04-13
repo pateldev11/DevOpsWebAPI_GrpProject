@@ -28,12 +28,7 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
-# Build project
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+
 
 # Run tests with coverage
 - task: DotNetCoreCLI@2

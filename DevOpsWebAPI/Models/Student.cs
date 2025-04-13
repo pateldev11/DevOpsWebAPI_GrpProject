@@ -1,6 +1,7 @@
 namespace DevOpsWebAPI.Models
 using System.Collections.Generic;
 using System.Linq;
+namespace DevOpsWebAPI.Models
 {
     public class Student
     {

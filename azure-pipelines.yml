@@ -29,15 +29,14 @@ steps:
     command: 'restore'
     projects: '**/DevOpsWebAPI.csproj'
 
-# ✅ Build solution
+# ✅ Build
 - task: DotNetCoreCLI@2
-  displayName: 'Build solution'
   inputs:
     command: 'build'
-    projects: '**/DevOpsWebAPI.csproj'
+    projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# ✅ Run tests (only if you have a test project)
+# ✅ Test
 - task: DotNetCoreCLI@2
   displayName: 'Run tests'
   condition: exists('**/*Tests.csproj')

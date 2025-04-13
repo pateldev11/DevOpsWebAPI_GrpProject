@@ -3,71 +3,72 @@ trigger:
     include:
       - main
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   buildConfiguration: 'Release'
 
+pool:
+  vmImage: 'windows-latest'
+
 steps:
 
-# Checkout source code
-- checkout: self
-
-# Install .NET SDK
+# ✅ Ensure latest .NET 7 SDK is installed
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '7.x'
+    version: '7.0.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
+# ✅ Set the installed version as default in PATH
+- script: |
+    echo "##vso[task.prependpath]$(Agent.ToolsDirectory)/dotnet"
+  displayName: 'Set .NET SDK PATH'
 
-# Restore dependencies
+# ✅ Checkout source code
+- checkout: self
+
+# ✅ Restore NuGet packages
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
 
-# Build project
+# ✅ Build the app
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# Run tests with coverage
+# ✅ Run unit tests
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
-# Publish build output
+# ✅ Publish the app
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-# Upload build artifact
+# ✅ Upload artifacts
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-# Mock Deploy to Dev
+# 🔄 Mock Deployments
 - script: echo "✅ Deploying to Dev Environment on port 5000"
-  displayName: 'Deploy to Dev'
+  displayName: 'Deploy to Dev Environment'
 
-# Mock Deploy to QAT
 - script: echo "✅ Deploying to QAT Environment"
-  displayName: 'Deploy to QAT'
+  displayName: 'Deploy to QAT Environment'
 
-# Mock Deploy to Staging
 - script: echo "✅ Deploying to Staging Environment"
-  displayName: 'Deploy to Staging'
+  displayName: 'Deploy to Staging Environment'
 
-# Mock Deploy to Production
 - script: echo "✅ Deploying to Production Environment"
-  displayName: 'Deploy to Production'
+  displayName: 'Deploy to Production Environment'

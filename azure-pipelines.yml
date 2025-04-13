@@ -3,72 +3,58 @@ trigger:
     include:
       - main
 
-variables:
-  buildConfiguration: 'Release'
-
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  buildConfiguration: 'Release'
+
 steps:
 
-# ✅ Ensure latest .NET 7 SDK is installed
+# ✅ Install .NET 7
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '7.0.x'
+    version: '7.0.400'
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-# ✅ Set the installed version as default in PATH
-- script: |
-    echo "##vso[task.prependpath]$(Agent.ToolsDirectory)/dotnet"
-  displayName: 'Set .NET SDK PATH'
+# ✅ Set PATH to use installed version
+- script: echo "##vso[task.prependpath]$(Agent.ToolsDirectory)/dotnet"
+  displayName: 'Use .NET 7 SDK'
 
-# ✅ Checkout source code
+# ✅ Checkout code
 - checkout: self
 
-# ✅ Restore NuGet packages
+# ✅ Restore dependencies
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
 
-# Build project
+# ✅ Build
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# ✅ Run unit tests
+# ✅ Test
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
-# ✅ Publish the app
+# ✅ Publish
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-# ✅ Upload artifacts
+# ✅ Upload
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-
-# 🔄 Mock Deployments
-- script: echo "✅ Deploying to Dev Environment on port 5000"
-  displayName: 'Deploy to Dev Environment'
-
-- script: echo "✅ Deploying to QAT Environment"
-  displayName: 'Deploy to QAT Environment'
-
-- script: echo "✅ Deploying to Staging Environment"
-  displayName: 'Deploy to Staging Environment'
-
-- script: echo "✅ Deploying to Production Environment"
-  displayName: 'Deploy to Production Environment'

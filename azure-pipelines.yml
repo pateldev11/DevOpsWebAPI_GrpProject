@@ -13,14 +13,11 @@ steps:
 
 - task: Checkout@1
 
-
-# SonarQube integration (Optional/Mock)
-- task: SonarQubePrepare@5
+- task: UseDotNet@2
   inputs:
-    SonarQube: 'SonarQubeServiceConnection' # or mock this name
-    scannerMode: 'MSBuild'
-    projectKey: 'dpat1072_DEVOPS-FINAL-GRP-PROJECT'
-    projectName: 'DevOps Web API'
+    packageType: 'sdk'
+    version: '7.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -38,11 +35,6 @@ steps:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
-
-- task: SonarQubeAnalyze@5
-- task: SonarQubePublish@5
-  inputs:
-    pollingTimeoutSec: '300'
 
 # Deliver Stage
 - task: DotNetCoreCLI@2

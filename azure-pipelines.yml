@@ -19,7 +19,7 @@ steps:
   inputs:
     SonarQube: 'SonarQubeServiceConnection' # or mock this name
     scannerMode: 'MSBuild'
-    projectKey: 'DevOpsWebAPI'
+    projectKey: 'dpat1072_DEVOPS-FINAL-GRP-PROJECT'
     projectName: 'DevOps Web API'
 
 - task: DotNetCoreCLI@2

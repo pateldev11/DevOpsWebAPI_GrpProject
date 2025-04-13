@@ -32,7 +32,7 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
-# ✅ Build the app
+# Build project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'

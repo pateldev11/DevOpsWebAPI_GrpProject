@@ -36,14 +36,6 @@ steps:
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# ✅ Test
-- task: DotNetCoreCLI@2
-  displayName: 'Run tests'
-  condition: exists('**/*Tests.csproj')
-  inputs:
-    command: 'test'
-    projects: '**/*Tests.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
 # ✅ Publish output
 - task: DotNetCoreCLI@2

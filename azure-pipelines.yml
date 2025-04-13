@@ -19,6 +19,8 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '7.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 
 # Restore dependencies
 - task: DotNetCoreCLI@2

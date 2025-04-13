@@ -13,11 +13,6 @@ steps:
 
 - task: Checkout@1
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '7.x.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # SonarQube integration (Optional/Mock)
 - task: SonarQubePrepare@5

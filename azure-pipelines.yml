@@ -3,65 +3,69 @@ trigger:
     include:
       - main
 
-variables:
-  buildConfiguration: 'Release'
-
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  buildConfiguration: 'Release'
+
 steps:
 
-- task: Checkout@1
+# Checkout source code
+- checkout: self
 
+# Install .NET SDK
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
     version: '7.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
-# 🔧 Restore project
+# Restore dependencies
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
 
-# 🔨 Build project
+# Build project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# 🧪 Run tests with code coverage
+# Run tests with coverage
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
-# 📦 Publish build output
+# Publish build output
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-# 🚚 Upload artifact
+# Upload build artifact
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-# 🧪 Deploy to mocked environments
+# Mock Deploy to Dev
 - script: echo "✅ Deploying to Dev Environment on port 5000"
-  displayName: 'Deploy to Dev Environment'
+  displayName: 'Deploy to Dev'
 
+# Mock Deploy to QAT
 - script: echo "✅ Deploying to QAT Environment"
-  displayName: 'Deploy to QAT Environment'
+  displayName: 'Deploy to QAT'
 
+# Mock Deploy to Staging
 - script: echo "✅ Deploying to Staging Environment"
-  displayName: 'Deploy to Staging Environment'
+  displayName: 'Deploy to Staging'
 
+# Mock Deploy to Production
 - script: echo "✅ Deploying to Production Environment"
-  displayName: 'Deploy to Production Environment'
+  displayName: 'Deploy to Production'

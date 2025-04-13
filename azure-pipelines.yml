@@ -11,49 +11,52 @@ variables:
 
 steps:
 
-# ✅ Install .NET 7
+# ✅ Install .NET 7 SDK
 - task: UseDotNet@2
+  displayName: 'Install .NET 7 SDK'
   inputs:
     packageType: 'sdk'
     version: '7.0.400'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
-# ✅ Set PATH to use installed version
-- script: echo "##vso[task.prependpath]$(Agent.ToolsDirectory)/dotnet"
-  displayName: 'Use .NET 7 SDK'
-
-# ✅ Checkout code
+# ✅ Checkout source code
 - checkout: self
+  displayName: 'Checkout code'
 
 # ✅ Restore dependencies
 - task: DotNetCoreCLI@2
+  displayName: 'Restore packages'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
+    projects: '**/DevOpsWebAPI.csproj'
 
-# ✅ Build
+# ✅ Build solution
 - task: DotNetCoreCLI@2
+  displayName: 'Build solution'
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: '**/DevOpsWebAPI.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-# ✅ Test
+# ✅ Run tests (only if you have a test project)
 - task: DotNetCoreCLI@2
+  displayName: 'Run tests'
+  condition: exists('**/*Tests.csproj')
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
-# ✅ Publish
+# ✅ Publish output
 - task: DotNetCoreCLI@2
+  displayName: 'Publish project'
   inputs:
     command: 'publish'
-    projects: '**/*.csproj'
+    projects: '**/DevOpsWebAPI.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
-# ✅ Upload
+# ✅ Publish artifacts
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish artifacts'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'

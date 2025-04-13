@@ -22,27 +22,24 @@ steps:
 - checkout: self
   displayName: 'Checkout code'
 
-# ✅ Restore dependencies
 - task: DotNetCoreCLI@2
   displayName: 'Restore packages'
   inputs:
     command: 'restore'
-    projects: '**/DevOpsWebAPI.csproj'
+    projects: 'DevOpsWebAPI/DevOpsWebAPI.csproj'
 
-# ✅ Build
 - task: DotNetCoreCLI@2
+  displayName: 'Build solution'
   inputs:
     command: 'build'
-    projects: '**/*.DevOpsWebAPIcsproj'
+    projects: 'DevOpsWebAPI/DevOpsWebAPI.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
-
-# ✅ Publish output
 - task: DotNetCoreCLI@2
   displayName: 'Publish project'
   inputs:
     command: 'publish'
-    projects: '**/DevOpsWebAPI.csproj'
+    projects: 'DevOpsWebAPI/DevOpsWebAPI.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
 # ✅ Publish artifacts

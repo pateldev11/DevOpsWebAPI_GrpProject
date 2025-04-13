@@ -33,7 +33,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: '**/*.DevOpsWebAPIcsproj'
     arguments: '--configuration $(buildConfiguration)'
 
 

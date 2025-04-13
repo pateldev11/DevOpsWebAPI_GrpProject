@@ -19,48 +19,49 @@ steps:
     version: '7.x'
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
+# 🔧 Restore project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
 
+# 🔨 Build project
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
 
+# 🧪 Run tests with code coverage
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Tests.csproj'
     arguments: '--configuration $(buildConfiguration) --collect:"Code Coverage"'
 
-# Deliver Stage
+# 📦 Publish build output
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+# 🚚 Upload artifact
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-# Deploy to Dev (mocked)
-- script: echo "Deploying to Dev Env on port 5000"
+# 🧪 Deploy to mocked environments
+- script: echo "✅ Deploying to Dev Environment on port 5000"
   displayName: 'Deploy to Dev Environment'
 
-# Deploy to QAT (mocked)
-- script: echo "Deploying to QAT Environment"
+- script: echo "✅ Deploying to QAT Environment"
   displayName: 'Deploy to QAT Environment'
 
-# Deploy to Staging (mocked)
-- script: echo "Deploying to Staging Environment"
+- script: echo "✅ Deploying to Staging Environment"
   displayName: 'Deploy to Staging Environment'
 
-# Deploy to Production (mocked)
-- script: echo "Deploying to Production Environment"
+- script: echo "✅ Deploying to Production Environment"
   displayName: 'Deploy to Production Environment'

@@ -8,6 +8,8 @@ namespace DevOpsWebAPI.Services
 
         public IEnumerable<Student> GetAll() => students;
 
+        public Student? GetById(int id) => students.FirstOrDefault(s => s.Id == id);
+
         public void Add(Student student)
         {
             student.Id = students.Count + 1;
